@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 type FormData struct {
@@ -25,10 +26,16 @@ var (
 func main() {
 	app := fiber.New()
 
-	// Load data from JSON file on startup
+	// Adicionar middleware de CORS
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "http://localhost:3000",
+		AllowMethods: "GET,POST",
+	}))
+
+	// Carregar dados do arquivo JSON ao iniciar
 	loadData()
 
-	// Endpoint to receive data (POST)
+	// Endpoint para receber dados (POST)
 	app.Post("/submit", func(c *fiber.Ctx) error {
 		data := new(FormData)
 
@@ -50,7 +57,7 @@ func main() {
 		})
 	})
 
-	// Endpoint to list data (GET)
+	// Endpoint para listar dados (GET)
 	app.Get("/data", func(c *fiber.Ctx) error {
 		mu.Lock()
 		defer mu.Unlock()
@@ -60,7 +67,7 @@ func main() {
 	app.Listen(":3033")
 }
 
-// Function to load data from JSON file
+// Função para carregar dados do arquivo JSON
 func loadData() {
 	mu.Lock()
 	defer mu.Unlock()
@@ -79,7 +86,7 @@ func loadData() {
 	}
 }
 
-// Function to save data to JSON file
+// Função para salvar dados no arquivo JSON
 func saveData() {
 	// Ensure the directory exists
 	if err := os.MkdirAll("data", os.ModePerm); err != nil {
