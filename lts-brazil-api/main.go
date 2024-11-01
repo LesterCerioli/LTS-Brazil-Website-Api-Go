@@ -20,23 +20,20 @@ type FormData struct {
 var (
 	dataStore []FormData
 	mu        sync.Mutex
-	filePath  = "data/formData.json"
+	filePath  = "data/userData.json"
 )
 
 func main() {
 	app := fiber.New()
 
-	// Adicionar middleware de CORS
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "http://localhost:3000",
 		AllowMethods: "GET,POST",
 	}))
 
-	// Carregar dados do arquivo JSON ao iniciar
 	loadData()
 
-	// Endpoint para receber dados (POST)
-	app.Post("/submit", func(c *fiber.Ctx) error {
+	app.Post("/api/users", func(c *fiber.Ctx) error {
 		data := new(FormData)
 
 		if err := c.BodyParser(data); err != nil {
@@ -45,29 +42,71 @@ func main() {
 			})
 		}
 
+		if data.Name == "" || data.Email == "" || data.Telephone == "" {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": "Name, Email, and Telephone are required",
+			})
+		}
+
 		mu.Lock()
 		dataStore = append(dataStore, *data)
 		saveData()
 		mu.Unlock()
 
-		return c.JSON(fiber.Map{
+		return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 			"status":  "success",
 			"message": "Data received successfully",
 			"data":    data,
 		})
 	})
 
-	// Endpoint para listar dados (GET)
 	app.Get("/data", func(c *fiber.Ctx) error {
 		mu.Lock()
 		defer mu.Unlock()
 		return c.JSON(dataStore)
 	})
 
+	app.Get("/api/protected", func(c *fiber.Ctx) error {
+
+		authorized := false // Change this according to your auth logic
+		if !authorized {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"error": "Unauthorized access",
+			})
+		}
+
+		return c.JSON(fiber.Map{
+			"message": "Welcome to the protected route!",
+		})
+	})
+
+	app.Get("/api/restricted", func(c *fiber.Ctx) error {
+
+		forbidden := true
+		if forbidden {
+			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+				"error": "Access to this resource is forbidden",
+			})
+		}
+
+		return c.JSON(fiber.Map{
+			"message": "You have access!",
+		})
+	})
+
+	app.Use(func(c *fiber.Ctx) error {
+		if err := c.Next(); err != nil {
+			c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Internal Server Error",
+			})
+			return err
+		}
+		return nil
+	})
+
 	app.Listen(":3033")
 }
 
-// Função para carregar dados do arquivo JSON
 func loadData() {
 	mu.Lock()
 	defer mu.Unlock()
@@ -86,9 +125,8 @@ func loadData() {
 	}
 }
 
-// Função para salvar dados no arquivo JSON
 func saveData() {
-	// Ensure the directory exists
+
 	if err := os.MkdirAll("data", os.ModePerm); err != nil {
 		panic(err)
 	}
