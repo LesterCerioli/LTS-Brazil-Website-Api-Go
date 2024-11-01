@@ -6,24 +6,21 @@
     "birthdate": "0001-01-01T00:00:00Z",
     "phone_number": "",
     "role": "",
-    "permission": ""
-  },
-  {
-    "id": "00000000-0000-0000-0000-000000000000",
-    "full_name": "",
-    "cpf": "",
-    "birthdate": "0001-01-01T00:00:00Z",
-    "phone_number": "",
-    "role": "",
-    "permission": ""
+    "permission": "",
+    "email": "",
+    "login": "",
+    "password": ""
   },
   {
     "id": "00000000-0000-0000-0000-000000000000",
     "full_name": "Maria Oliveira",
-    "cpf": "123.456.789-00",
+    "cpf": "135.594.230-66",
     "birthdate": "1990-01-01T00:00:00Z",
     "phone_number": "+55 21 98765-4321",
     "role": "Developer",
-    "permission": "FullAccess"
+    "permission": "FullAccess",
+    "email": "",
+    "login": "",
+    "password": ""
   }
 ]
