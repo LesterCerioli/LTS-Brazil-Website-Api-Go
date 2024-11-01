@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"lts-brazil-api/models"
 	"lts-brazil-api/services"
 
 	"github.com/gofiber/fiber/v2"
@@ -23,6 +24,10 @@ func PostUser(userService *services.UserService) fiber.Handler {
 		}
 		if user.FullName == "" || user.CPF == "" || user.BirthDate == "" || user.PhoneNumber == "" || user.RoleName == "" || user.PermissionType == "" {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "All fields are required"})
+		}
+
+		if err := models.ValidateCPF(user.CPF); err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 		}
 
 		err := userService.CreateUser(user.FullName, user.CPF, user.BirthDate, user.PhoneNumber, user.RoleName, user.PermissionType)
