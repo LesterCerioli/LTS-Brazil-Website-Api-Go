@@ -7,13 +7,15 @@ Body:
 
 ```json
 {
-    "fullName": "Maria Oliveira",
-    "cpf": "123.456.789-00",
+    "fullName": "Elian Oliveira",
+    "cpf": "369.950.410-70",
     "birthDate": "01/01/1990",
     "phoneNumber": "+55 21 98765-4321",
     "roleName": "Developer",
-    "permissionType": "FullAccess"
+    "permissionType": "FullAccess",
+    "email": "maria.oliveira@example.com",
+    "login": "maria.oliveira",
+    "password": "Gdlçkrtoortjgj4tgop4tkgp45koh55hy5phy5rtkyhptkkhtptoykt"
 }
-
 
 
