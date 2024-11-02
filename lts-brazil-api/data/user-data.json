@@ -1,0 +1,14 @@
+[
+  {
+    "id": "00000000-0000-0000-0000-000000000000",
+    "full_name": "Elian Oliveira",
+    "cpf": "369.950.410-70",
+    "birthdate": "1990-01-01T00:00:00Z",
+    "phone_number": "+55 21 98765-4321",
+    "role": "Developer",
+    "permission": "FullAccess",
+    "email": "maria.oliveira@example.com",
+    "login": "maria.oliveira",
+    "password": "8a330dc2a538d36999cb59dbc5206a341c351e26b391d340e91f2fa200c9512b"
+  }
+]
