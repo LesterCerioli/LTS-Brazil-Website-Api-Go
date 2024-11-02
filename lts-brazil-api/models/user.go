@@ -50,7 +50,6 @@ func ValidateCPF(cpf string) error {
 		}
 	}
 
-	// Validate CPF algorithm
 	sum := 0
 	for i := 0; i < 9; i++ {
 		sum += int(cpf[i]-'0') * (10 - i)

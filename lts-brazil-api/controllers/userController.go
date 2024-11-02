@@ -14,6 +14,9 @@ type User struct {
 	PhoneNumber    string `json:"phoneNumber"`
 	RoleName       string `json:"roleName"`
 	PermissionType string `json:"permissionType"`
+	Email          string `json:"email"`
+	Login          string `json:"login"`
+	Password       string `json:"password"`
 }
 
 func PostUser(userService *services.UserService) fiber.Handler {
@@ -22,7 +25,7 @@ func PostUser(userService *services.UserService) fiber.Handler {
 		if err := c.BodyParser(user); err != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Cannot parse JSON"})
 		}
-		if user.FullName == "" || user.CPF == "" || user.BirthDate == "" || user.PhoneNumber == "" || user.RoleName == "" || user.PermissionType == "" {
+		if user.FullName == "" || user.CPF == "" || user.BirthDate == "" || user.PhoneNumber == "" || user.RoleName == "" || user.PermissionType == "" || user.Email == "" || user.Login == "" || user.Password == "" {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "All fields are required"})
 		}
 
@@ -30,7 +33,9 @@ func PostUser(userService *services.UserService) fiber.Handler {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 		}
 
-		err := userService.CreateUser(user.FullName, user.CPF, user.BirthDate, user.PhoneNumber, user.RoleName, user.PermissionType)
+		user.Password = services.GenerateToken(user.Password)
+
+		err := userService.CreateUser(user.FullName, user.CPF, user.BirthDate, user.PhoneNumber, user.RoleName, user.PermissionType, user.Email, user.Login, user.Password)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 		}
